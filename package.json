@@ -1,0 +1,32 @@
+{
+  "name": "node-red-contrib-pdf",
+  "version": "0.0.0",
+  "description": "Node for node-red to render html as a pdf file or stream",
+  "main": "pdf.js",
+  "dependencies": {
+    "html-pdf": "2.0.1"
+  },
+  "node-red": {
+    "nodes": {
+      "pdf": "pdf.js"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redconnect-io/node-red-contrib-render"
+  },
+  "keywords": [
+    "node-red",
+    "html",
+    "pdf",
+    "render",
+    "redconnect"
+  ],
+  "author": "Redconnect.io (Red Ant)",
+  "license": "MIT",
+  "homepage": "http://www.redconnect.io",
+  "bugs": {}
+}

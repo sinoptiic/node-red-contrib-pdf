@@ -1,0 +1,97 @@
+/**
+ * Copyright 2013 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
+
+module.exports = function(RED) {
+    "use strict";
+    var pdf = require("html-pdf");
+
+    function TemplateNode(n) {
+        RED.nodes.createNode(this,n);
+        this.name = n.name;
+        this.output = n.output || "stream";
+
+        var node = this;
+        node.on("input", function(msg) {
+            try {
+                if (msg.payload === undefined) {
+                    throw new Error("No msg.payload specified. Nothing to render");
+                }
+
+                var send = function(err,res) {
+                    if (err) {
+                            node.error(err,msg);
+                        } else {
+                            msg.payload = res;
+                            node.send(msg);
+                        }
+                };
+
+                switch (node.output) {
+
+                    case 'stream' :
+                        pdf.create(msg.payload, msg.options).toStream(function(err, stream){
+                           send(err,stream);
+                        });
+                        break;
+    
+                    case 'buffer' :
+                        pdf.create(msg.payload, msg.options).toBuffer(function(err, buffer){
+                            send(err,buffer);
+                        });
+                    break;
+
+                    case 'file' :
+                        if (msg.filename === undefined) {
+                            throw new Error("No filename specified in 'msg.filename'");
+                        }
+
+                        pdf.create(msg.payload, msg.options).toFile(msg.filename, function(err, res){
+                        	send(err,res);
+                        });
+                    break;
+
+                    case 'string' :
+
+                        var result = '';
+
+                        pdf.create(msg.payload, msg.options).toStream(function(err, stream){
+
+                            if (err) {
+                                node.error(err,msg);
+                            } else {
+                                stream.on('readable',function(buffer){
+                                    var part = buffer.read().toString();
+                                    string += part;
+                                    console.log('stream data ' + part);
+                                });
+
+                                stream.on('end',function(){
+                                    console.log('final output ' + string);
+                                });
+                            }
+
+                        });
+
+                    break;
+                }
+            } catch(err) {
+                node.error(err.message, msg);
+            }
+        });
+    }
+
+    RED.nodes.registerType("HTML-PDF",TemplateNode);
+}

@@ -1,0 +1,64 @@
+<!--
+  Copyright 2013, 2015 IBM Corp.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="HTML-PDF">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
+    </div>
+    <div class="form-row">
+    <label for="node-input-output"><i class="fa fa-wrench"></i> Output Type</label>
+    <select type="text" id="node-input-output">
+      <option value="stream">stream</option>
+      <option value="buffer">buffer</option>
+      <option value="string">binary string</option>
+      <option value="file">file</option>
+    </select>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="HTML-PDF">
+    <p>Creates a pdf binary, based on html provided in `msg.payload`.</p>
+    Outputs to `msg.payload` in steam or buffer form (dependent on configuration)<br />
+    If 'file' output is specified, the filename must be provided in `msg.filename` and the pdf will be written directly to file.<br/>
+    <p>
+    The render engine, also accepts additional config options, that a provided in `msg.options`. The possible options are outlined here:<br/>
+    <a href=https://www.npmjs.com/package/html-pdf>https://www.npmjs.com/package/html-pdf</a>
+    </p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('HTML-PDF',{
+        color:"#DEBD5C",
+        category: 'function',
+        defaults: {
+            name: {value:"HTML-PDF"},
+            output: {value:"stream"},
+        },
+        inputs:1,
+        outputs:1,
+        icon: "parser-csv.png",
+        label: function() {
+            return this.name;
+        },
+        oneditprepare: function() {
+            var that = this;
+            if (!this.output) {
+                this.output = 'stream';
+            }
+        }
+    });
+</script>
