@@ -4,7 +4,7 @@
   "description": "Node for node-red to render html as a pdf file or stream",
   "main": "pdf.js",
   "dependencies": {
-    "html-pdf": "2.0.1"
+    "html-pdf": "2.2.0"
   },
   "node-red": {
     "nodes": {
